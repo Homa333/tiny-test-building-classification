@@ -76,12 +76,13 @@ class BuildingPipeline:
 
             try:
 
-                final_prediction, scores = self.aggregate_predictions(
+                final_prediction, scores, final_confidence = self.aggregate_predictions(
                     final_results[location_id]["year_wise_prediction"]
                 )
 
                 final_results[location_id]["final_prediction"] = final_prediction
                 final_results[location_id]["scores"] = scores
+                final_results[location_id]["final_confidence"] = final_confidence
 
             except Exception as e:
 
@@ -91,6 +92,7 @@ class BuildingPipeline:
 
                 final_results[location_id]["final_prediction"] = BuildingType.UNKNOWN.value
                 final_results[location_id]["scores"] = {}
+                final_results[location_id]["final_confidence"] = 0.0
 
         self.output_writer.write_predictions_csv(
             self.prediction_file, final_results)
@@ -193,6 +195,11 @@ class BuildingPipeline:
                     building_cropped_image
                 )
 
+                # This will be used for ablation to see if classification on full image performs better than cropped image
+                # label, confidence = self.classifier.classify(
+                #     image
+                # )
+
             except Exception as e:
 
                 self.logger.warning(
@@ -247,4 +254,10 @@ class BuildingPipeline:
 
         final_prediction = max(scores, key=scores.get)
 
-        return final_prediction, scores
+        final_confidence = max(
+            pred_data.get("confidence", 0.0)
+            for pred_data in year_wise_prediction.values()
+            if pred_data.get("prediction") == final_prediction
+        )
+
+        return final_prediction, scores, final_confidence

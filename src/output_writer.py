@@ -17,7 +17,8 @@ class OutputWriter:
 
                 writer = csv.DictWriter(
                     f,
-                    fieldnames=["location_id", "address", "prediction"]
+                    fieldnames=["location_id", "address",
+                                "prediction", "confidence"]
                 )
 
                 writer.writeheader()
@@ -28,7 +29,8 @@ class OutputWriter:
                     writer.writerow({
                         "location_id": location_id,
                         "address": data.get("address", "unknown"),
-                        "prediction": data.get("final_prediction", "unknown")
+                        "prediction": data.get("final_prediction", "unknown"),
+                        "confidence": data.get("final_confidence", 0.0)
                     })
 
         except Exception as e:
