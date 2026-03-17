@@ -1,6 +1,4 @@
 import os
-import json
-import csv
 from PIL import Image, UnidentifiedImageError
 
 from src.output_writer import OutputWriter
