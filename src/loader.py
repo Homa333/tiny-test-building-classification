@@ -4,7 +4,7 @@ from pathlib import Path
 
 class DataLoader:
 
-    def __init__(self, data_dir: str, metadata_file_name: str = "metadata_copy.csv"):
+    def __init__(self, data_dir: str, metadata_file_name: str = "metadata.csv"):
 
         self.image_root = Path(data_dir)
         metadata_path = self.image_root / metadata_file_name
